@@ -42,7 +42,7 @@ const StudioContact = () => {
   };
 
   const contacts = [
-    { icon: "MessageCircle", label: "Telegram", value: "@visual_ai_studio" },
+    { icon: "MessageCircle", label: "Telegram", value: "@hanzi77" },
     { icon: "Clock", label: "Время ответа", value: "До 2 часов" },
     { icon: "Zap", label: "Срок выполнения", value: "2–24 часа" },
   ];
