@@ -1,0 +1,162 @@
+import { useEffect, useRef } from "react";
+import { Button } from "@/components/ui/button";
+import Icon from "@/components/ui/icon";
+
+const StudioHero = () => {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const particles: { x: number; y: number; vx: number; vy: number; size: number; opacity: number }[] = [];
+    for (let i = 0; i < 80; i++) {
+      particles.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        vx: (Math.random() - 0.5) * 0.3,
+        vy: (Math.random() - 0.5) * 0.3,
+        size: Math.random() * 1.5 + 0.5,
+        opacity: Math.random() * 0.5 + 0.1,
+      });
+    }
+
+    let animId: number;
+    const animate = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach((p) => {
+        p.x += p.vx;
+        p.y += p.vy;
+        if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+        if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(0, 255, 102, ${p.opacity})`;
+        ctx.fill();
+      });
+
+      particles.forEach((p1, i) => {
+        particles.slice(i + 1).forEach((p2) => {
+          const dx = p1.x - p2.x;
+          const dy = p1.y - p2.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < 120) {
+            ctx.beginPath();
+            ctx.moveTo(p1.x, p1.y);
+            ctx.lineTo(p2.x, p2.y);
+            ctx.strokeStyle = `rgba(0, 255, 102, ${0.08 * (1 - dist / 120)})`;
+            ctx.lineWidth = 0.5;
+            ctx.stroke();
+          }
+        });
+      });
+
+      animId = requestAnimationFrame(animate);
+    };
+    animate();
+
+    const handleResize = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    };
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      cancelAnimationFrame(animId);
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  const scrollTo = (id: string) =>
+    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+
+  return (
+    <section className="min-h-screen relative flex items-center overflow-hidden">
+      <canvas ref={canvasRef} className="absolute inset-0 z-0" />
+      <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black z-0" />
+
+      <div className="container mx-auto px-4 relative z-10 pt-24 pb-16">
+        <div className="max-w-4xl mx-auto text-center">
+          <div className="inline-flex items-center gap-2 bg-neon/10 border border-neon/30 rounded-full px-4 py-2 mb-8 animate-fade-in">
+            <span className="w-2 h-2 rounded-full bg-neon animate-pulse" />
+            <span className="text-neon text-sm font-medium">Visual & AI Studio — контент для маркетплейсов</span>
+          </div>
+
+          <h1
+            className="text-5xl md:text-7xl font-black mb-6 leading-tight animate-fade-in"
+            style={{ animationDelay: "0.1s" }}
+          >
+            Контент для{" "}
+            <span className="text-neon text-glow-neon">маркетплейсов</span>,
+            <br />
+            который продает за вас
+          </h1>
+
+          <p
+            className="text-lg md:text-xl text-zinc-400 mb-10 max-w-2xl mx-auto animate-fade-in"
+            style={{ animationDelay: "0.2s" }}
+          >
+            Профессиональные визуалы для WB и Ozon: удаление фонов, инфографика,
+            карточки товаров и AI-генерация интерьеров — всё под ключ
+          </p>
+
+          <div
+            className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in"
+            style={{ animationDelay: "0.3s" }}
+          >
+            <Button
+              onClick={() => scrollTo("contact")}
+              className="bg-neon text-black hover:bg-green-400 font-bold text-base px-8 py-6 rounded-xl glow-neon transition-all hover:scale-105"
+            >
+              <Icon name="Zap" size={18} className="mr-2" />
+              Заказать проект
+            </Button>
+            <Button
+              variant="outline"
+              className="border-white/20 text-white hover:border-neon/50 hover:text-neon font-medium text-base px-8 py-6 rounded-xl transition-all"
+              asChild
+            >
+              <a href="/pricelist.pdf" download>
+                <Icon name="Download" size={18} className="mr-2" />
+                Скачать прайс-лист PDF
+              </a>
+            </Button>
+          </div>
+
+          <div
+            className="grid grid-cols-3 gap-6 mt-16 max-w-xl mx-auto animate-fade-in"
+            style={{ animationDelay: "0.4s" }}
+          >
+            {[
+              { icon: "Clock", label: "Срок выполнения", value: "2–24 ч" },
+              { icon: "Bot", label: "Технология", value: "AI + ручная работа" },
+              { icon: "Star", label: "Качество", value: "WB & Ozon" },
+            ].map((item) => (
+              <div key={item.label} className="text-center">
+                <div className="inline-flex p-3 rounded-xl bg-neon/10 border border-neon/20 mb-3">
+                  <Icon name={item.icon as "Clock"} size={20} className="text-neon" />
+                </div>
+                <div className="text-white font-bold text-sm">{item.value}</div>
+                <div className="text-zinc-500 text-xs mt-1">{item.label}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <button
+        onClick={() => scrollTo("services")}
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 text-zinc-500 hover:text-neon transition-colors animate-float"
+      >
+        <Icon name="ChevronDown" size={28} />
+      </button>
+    </section>
+  );
+};
+
+export default StudioHero;
