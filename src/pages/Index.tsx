@@ -1,5 +1,6 @@
 import StudioHeader from "@/components/studio/StudioHeader";
 import StudioHero from "@/components/studio/StudioHero";
+import BeforeAfterSlider from "@/components/studio/BeforeAfterSlider";
 import ServicesSection from "@/components/studio/ServicesSection";
 import CalculatorSection from "@/components/studio/CalculatorSection";
 import PortfolioSection from "@/components/studio/PortfolioSection";
@@ -12,6 +13,7 @@ const Index = () => {
       <StudioHeader />
       <main>
         <StudioHero />
+        <BeforeAfterSlider />
         <ServicesSection />
         <CalculatorSection />
         <PortfolioSection />
