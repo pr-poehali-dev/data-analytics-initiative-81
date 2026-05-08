@@ -27,13 +27,18 @@ const StudioContact = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    await new Promise((r) => setTimeout(r, 1500));
-    setIsSubmitting(false);
-    setIsSubmitted(true);
-    setTimeout(() => {
-      setIsSubmitted(false);
+    try {
+      await fetch("https://functions.poehali.dev/e2e3c369-62dc-44a0-b9bb-6cdef54d1a89", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+      setIsSubmitted(true);
       setForm({ name: "", contact: "", message: "" });
-    }, 4000);
+      setTimeout(() => setIsSubmitted(false), 5000);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const contacts = [
