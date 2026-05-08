@@ -1,9 +1,55 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import Icon from "@/components/ui/icon";
 
+const portfolioImages = [
+  {
+    src: "https://cdn.poehali.dev/projects/d9ca0fea-83dc-487e-812a-3b72fc9abd41/bucket/ed98e139-7205-44be-afbe-2ff0d72b9531.jpeg",
+    label: "Зарядное устройство",
+  },
+  {
+    src: "https://cdn.poehali.dev/projects/d9ca0fea-83dc-487e-812a-3b72fc9abd41/bucket/9f19fe0c-d42b-4eef-9bb0-430255b72dbb.jpeg",
+    label: "Кофемашина",
+  },
+  {
+    src: "https://cdn.poehali.dev/projects/d9ca0fea-83dc-487e-812a-3b72fc9abd41/bucket/006d8c99-b240-43d4-a754-833f217a8180.png",
+    label: "Instagram Stories",
+  },
+  {
+    src: "https://cdn.poehali.dev/projects/d9ca0fea-83dc-487e-812a-3b72fc9abd41/bucket/e0572c6f-bce8-4d07-bbfc-2e77a50e67e7.jpeg",
+    label: "Наушники",
+  },
+];
+
 const StudioHero = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const [lightbox, setLightbox] = useState<string | null>(null);
+
+  useEffect(() => {
+    const track = trackRef.current;
+    if (!track) return;
+    let pos = 0;
+    const speed = 0.4;
+    let rafId: number;
+    const step = () => {
+      pos += speed;
+      const half = track.scrollWidth / 2;
+      if (pos >= half) pos = 0;
+      track.style.transform = `translateX(-${pos}px)`;
+      rafId = requestAnimationFrame(step);
+    };
+    rafId = requestAnimationFrame(step);
+    const pause = () => cancelAnimationFrame(rafId);
+    const resume = () => { rafId = requestAnimationFrame(step); };
+    track.addEventListener("mouseenter", pause);
+    track.addEventListener("mouseleave", resume);
+    return () => {
+      cancelAnimationFrame(rafId);
+      track.removeEventListener("mouseenter", pause);
+      track.removeEventListener("mouseleave", resume);
+    };
+  }, []);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -128,8 +174,40 @@ const StudioHero = () => {
             </Button>
           </div>
 
+          {/* Portfolio strip */}
           <div
-            className="grid grid-cols-3 gap-6 mt-16 max-w-xl mx-auto animate-fade-in"
+            className="mt-12 -mx-4 overflow-hidden animate-fade-in"
+            style={{ animationDelay: "0.35s" }}
+          >
+            <p className="text-zinc-500 text-xs tracking-widest uppercase mb-4 text-center">Примеры наших работ</p>
+            <div className="relative">
+              <div className="absolute left-0 top-0 bottom-0 w-16 z-10 pointer-events-none bg-gradient-to-r from-black to-transparent" />
+              <div className="absolute right-0 top-0 bottom-0 w-16 z-10 pointer-events-none bg-gradient-to-l from-black to-transparent" />
+              <div className="flex overflow-hidden">
+                <div ref={trackRef} className="flex gap-3 will-change-transform" style={{ width: "max-content" }}>
+                  {[...portfolioImages, ...portfolioImages].map((img, i) => (
+                    <div
+                      key={i}
+                      className="relative flex-shrink-0 w-36 h-48 rounded-2xl overflow-hidden cursor-zoom-in group border border-white/5 hover:border-neon/40 transition-all duration-300"
+                      onClick={() => setLightbox(img.src)}
+                    >
+                      <img src={img.src} alt={img.label} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                      <p className="absolute bottom-2 left-0 right-0 text-center text-white text-[10px] font-medium opacity-0 group-hover:opacity-100 transition-opacity px-2">{img.label}</p>
+                      <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <div className="bg-black/60 rounded-full p-1">
+                          <Icon name="ZoomIn" size={12} className="text-neon" />
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div
+            className="grid grid-cols-3 gap-6 mt-12 max-w-xl mx-auto animate-fade-in"
             style={{ animationDelay: "0.4s" }}
           >
             {[
@@ -155,6 +233,26 @@ const StudioHero = () => {
       >
         <Icon name="ChevronDown" size={28} />
       </button>
+
+      {lightbox && (
+        <div
+          className="fixed inset-0 z-50 bg-black/90 backdrop-blur-sm flex items-center justify-center p-4"
+          onClick={() => setLightbox(null)}
+        >
+          <button
+            className="absolute top-4 right-4 text-white/60 hover:text-white bg-white/10 rounded-full p-2 transition-colors"
+            onClick={() => setLightbox(null)}
+          >
+            <Icon name="X" size={22} />
+          </button>
+          <img
+            src={lightbox}
+            alt="Превью"
+            className="max-w-full max-h-[90vh] object-contain rounded-2xl shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          />
+        </div>
+      )}
     </section>
   );
 };
