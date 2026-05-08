@@ -15,7 +15,7 @@ const portfolioItems = [
   {
     label: "Instagram Stories Pack",
     tag: "Rich-Animation",
-    image: "https://cdn.poehali.dev/projects/d9ca0fea-83dc-487e-812a-3b72fc9abd41/bucket/006d8c99-b240-43d4-a754-833f217a8180.png",
+    image: "https://cdn.poehali.dev/projects/d9ca0fea-83dc-487e-812a-3b72fc9abd41/bucket/d416edbc-a971-4f18-9182-a58f24996873.jpeg",
   },
   {
     label: "Беспроводные наушники",
