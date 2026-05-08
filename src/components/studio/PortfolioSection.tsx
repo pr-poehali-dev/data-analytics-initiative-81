@@ -8,9 +8,9 @@ const portfolioItems = [
     image: "https://cdn.poehali.dev/projects/d9ca0fea-83dc-487e-812a-3b72fc9abd41/bucket/ed98e139-7205-44be-afbe-2ff0d72b9531.jpeg",
   },
   {
-    label: "Клавиатура с экраном",
+    label: "Портативная кофемашина",
     tag: "Product Set",
-    image: "https://cdn.poehali.dev/projects/d9ca0fea-83dc-487e-812a-3b72fc9abd41/bucket/b8b8a979-2a6c-4001-bd11-51f49d7dd412.jpeg",
+    image: "https://cdn.poehali.dev/projects/d9ca0fea-83dc-487e-812a-3b72fc9abd41/bucket/9f19fe0c-d42b-4eef-9bb0-430255b72dbb.jpeg",
   },
   {
     label: "Instagram Stories Pack",
